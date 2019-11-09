@@ -4,6 +4,7 @@ import com.example.demo.model.GetAllUsersResponse;
 import com.example.demo.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -16,5 +17,11 @@ public class UserController {
     public GetAllUsersResponse getAllUsers(){
 
         return new GetAllUsersResponse(service.getAllUsers());
+    }
+
+    @GetMapping("/usersByStatus/{userStatus}")
+    public GetAllUsersResponse getUsersByStatus(@PathVariable String userStatus){
+        return new GetAllUsersResponse(service.getUserByStatus(userStatus));
+
     }
 }

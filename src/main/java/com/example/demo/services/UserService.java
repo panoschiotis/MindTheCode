@@ -25,4 +25,15 @@ public class UserService {
     }
 
 
+    public List<UserResponse> getUserByStatus(String userStatus) {
+        List<UserResponse> mappedUsers=getAllUsers();
+        List<UserResponse> usersByStatus=new ArrayList<>();
+        for (UserResponse user: mappedUsers
+        ) {
+            if(user.getStatus().equalsIgnoreCase(userStatus)){
+                usersByStatus.add(user);
+            }
+        }
+        return usersByStatus;
+    }
 }

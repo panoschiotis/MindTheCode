@@ -27,4 +27,6 @@ public class UserMapper {
     private String mapStatusToString(User user) {
         return String.valueOf(user.getStatus()).toLowerCase();
     }
+
+
 }

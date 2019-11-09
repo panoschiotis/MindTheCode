@@ -55,4 +55,18 @@ public class TourService {
         }
         return tours;
     }
+    //spaei to open/closed ara prepei na ginei refactor se strategy design bu
+    public List<TourResponse> getToursByCriteria(String criteria, Long criteriaId) {
+        Iterable<Tour> tours= repository.findAll();
+        List<TourResponse> toursToReturn= new ArrayList<>();
+        if(criteria.equalsIgnoreCase("tourPackage")){
+            for (Tour tour : tours
+                 ) {
+                if(tour.getTourPackage().getId()==criteriaId){
+                    toursToReturn.add(mapper.mapTourResponseFromTour(tour));
+                }
+            }
+        }
+        return toursToReturn;
+    }
 }
