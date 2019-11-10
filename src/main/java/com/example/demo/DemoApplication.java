@@ -58,12 +58,14 @@ public class DemoApplication implements CommandLineRunner //to run code in appli
         //This crashes the app, because we have not saved fake tourPackage in the database
 /*      TourPackage fakeTourPackage = new TourPackage("this si fake", 0, "does not exist");
         tour2.setTourPackage(fakeTourPackage);*/
+        Tour tour3 = new Tour(600 ,200, "Test Tour", "Drink ouzo", "Enjoy half day drinking the best ouzo in Greece");
 
         tourRepository.save(tour1);
         tourRepository.save(tour2);
         tourRepository.save(karitena);
         tourRepository.save(dimitsana);
         tourRepository.save(rafting);
+        tourRepository.save(tour3);
 
 
         User user1 =new User("John", "Wick", 3, Status.NEW);

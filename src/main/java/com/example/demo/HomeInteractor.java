@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.model.GenericResponse;
 import com.example.demo.model.HomePageResponse;
 import com.example.demo.model.TourPackageResponse;
 import com.example.demo.model.UserResponse;
@@ -14,17 +15,17 @@ import java.util.List;
 public class HomeInteractor {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    TourPackageService tourPackageService;
+    private TourPackageService tourPackageService;
 
     public HomePageResponse getHomePage(){
         List<TourPackageResponse> tourPackages=tourPackageService.getAllTourPackages();
-        List<UserResponse> users=userService.getAllUsers();
+        GenericResponse<List<UserResponse>> users=userService.getAllUsers();
         int numberOfTourPackages= tourPackages.size();
-        int numberOfUsers = users.size();
+        int numberOfUsers = users.getData().size();
         String title="Home Page";
-        return new HomePageResponse(title,numberOfTourPackages,numberOfUsers,tourPackages,users);
+        return new HomePageResponse(title,numberOfTourPackages,numberOfUsers,tourPackages,users.getData());
     }
 }

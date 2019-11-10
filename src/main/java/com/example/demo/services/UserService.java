@@ -1,6 +1,9 @@
 package com.example.demo.services;
 
+import com.example.demo.Status;
 import com.example.demo.UserMapper;
+import com.example.demo.model.Error;
+import com.example.demo.model.GenericResponse;
 import com.example.demo.model.User;
 import com.example.demo.model.UserResponse;
 import com.example.demo.repositories.UserRepository;
@@ -20,20 +23,28 @@ public class UserService {
     @Autowired
     private UserRepository repository;
 
-    public List<UserResponse> getAllUsers(){
-        return mapper.mapUserResponse(repository.findAll());
+    public GenericResponse<List<UserResponse>> getAllUsers(){
+        return new GenericResponse<>(mapper.mapUserResponse(repository.findAll()));
     }
 
 
-    public List<UserResponse> getUserByStatus(String userStatus) {
-        List<UserResponse> mappedUsers=getAllUsers();
+    public GenericResponse<List<UserResponse>> getUserByStatus(String userStatus) {
+        GenericResponse<List<UserResponse>> mappedUsers=getAllUsers();
         List<UserResponse> usersByStatus=new ArrayList<>();
-        for (UserResponse user: mappedUsers
-        ) {
-            if(user.getStatus().equalsIgnoreCase(userStatus)){
-                usersByStatus.add(user);
+        for (Status status : Status.values()
+             ) {
+            if(userStatus.equalsIgnoreCase(status.toString())){
+
+                for (UserResponse user: mappedUsers.getData()
+                ) {
+                    if(user.getStatus().equalsIgnoreCase(userStatus)){
+                        usersByStatus.add(user);
+                    }
+                }
+                return new GenericResponse<>(usersByStatus);
             }
         }
-        return usersByStatus;
+        return new GenericResponse<>(new Error(0, "Wrong Input", "User Status are new, loyal , gold, platinum"));
+
     }
 }

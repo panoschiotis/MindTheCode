@@ -1,8 +1,13 @@
 package com.example.demo.services;
 
 import com.example.demo.TourMapper;
+import com.example.demo.model.GenericResponse;
+import com.example.demo.model.GetAllToursResponse;
 import com.example.demo.model.Tour;
+import com.example.demo.model.Error;
+
 import com.example.demo.model.TourResponse;
+import com.example.demo.repositories.TourPackageRepository;
 import com.example.demo.repositories.TourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +23,10 @@ public class TourService {
     @Autowired
     private TourRepository repository;
 
-    public List<TourResponse> getAllTours() {
+    @Autowired
+    private TourPackageRepository tourPackageRepository;
+
+    public GenericResponse<List<TourResponse>> getAllTours() {
 
         Iterable<Tour> retrievedTours = repository.findAll();
         List<TourResponse> tours = new ArrayList();
@@ -26,7 +34,7 @@ public class TourService {
             tours.add(mapper.mapTourResponseFromTour(tour));
 
         }
-        return tours;
+        return new GenericResponse<>(tours);
     }
 
 
@@ -34,7 +42,7 @@ public class TourService {
         Iterable<Tour> retrievedTours = repository.findAll();
         List<TourResponse> tours = new ArrayList<>();
         for (Tour tour : retrievedTours) {
-            if (tour.getTourPackage().getId() == tourPackageId) {
+            if (tour.getTourPackage() != null && tour.getTourPackage().getId() == tourPackageId) {
                 tours.add(mapper.mapTourResponseFromTour(tour));
             }
 
@@ -42,10 +50,10 @@ public class TourService {
         return tours;
     }
 
-    public List<TourResponse> getExpensiveTours() {
-        List<TourResponse> allTourResponses = getAllTours();
+    public GenericResponse<List<TourResponse>> getExpensiveTours() {
+        GenericResponse<List<TourResponse>> allTourResponses = getAllTours();
         List<TourResponse> tours = new ArrayList<>();
-        for (TourResponse tour : allTourResponses
+        for (TourResponse tour : allTourResponses.getData()
         ) {
             if (tour.getFinalPrice() > 500) {
                 tours.add(tour);
@@ -53,20 +61,25 @@ public class TourService {
 
 
         }
-        return tours;
+        return new GenericResponse<>(tours);
     }
+
     //spaei to open/closed ara prepei na ginei refactor se strategy design bu
-    public List<TourResponse> getToursByCriteria(String criteria, Long criteriaId) {
-        Iterable<Tour> tours= repository.findAll();
-        List<TourResponse> toursToReturn= new ArrayList<>();
-        if(criteria.equalsIgnoreCase("tourPackage")){
+    public GenericResponse<List<TourResponse>> getToursByCriteria(String criteria, Long criteriaId) {
+        Iterable<Tour> tours = repository.findAll();
+        List<TourResponse> toursToReturn = new ArrayList<>();
+        if (criteria.equalsIgnoreCase("tourPackage")) {
+            if (!tourPackageRepository.findById(criteriaId).isPresent()) {
+                return new GenericResponse<>(new Error(0, "Wrong input", "tourpackage with id : " + criteriaId + " does not exist"));
+            }
             for (Tour tour : tours
-                 ) {
-                if(tour.getTourPackage().getId()==criteriaId){
+            ) {
+                if (tour.getTourPackage().getId() == criteriaId) {
                     toursToReturn.add(mapper.mapTourResponseFromTour(tour));
                 }
             }
         }
-        return toursToReturn;
+
+        return new GenericResponse<>(toursToReturn);
     }
 }
