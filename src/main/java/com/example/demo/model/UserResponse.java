@@ -12,7 +12,7 @@ public class UserResponse {
 
 
 
-    public UserResponse(Long id, String firstName, String lastName, int numberOfBookings, String status) {
+    public UserResponse(long id, String firstName, String lastName, int numberOfBookings, String status) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -20,11 +20,11 @@ public class UserResponse {
         this.status = status;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 

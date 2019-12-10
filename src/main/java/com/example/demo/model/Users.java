@@ -8,10 +8,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class User {
+public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
     private String firstName;
     private String lastName;
     private int numberOfBookings;
@@ -19,21 +19,21 @@ public class User {
 
 
 
-    public User(String firstName, String lastName, int numberOfBookings, Status status) {
+    public Users(String firstName, String lastName, int numberOfBookings, Status status) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.numberOfBookings = numberOfBookings;
         this.status = status;
     }
 
-    public User() {
+    public Users() {
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 

@@ -1,12 +1,10 @@
 package com.example.demo.services;
 
+import com.example.demo.SearchTourStrategy;
 import com.example.demo.TourMapper;
-import com.example.demo.model.GenericResponse;
-import com.example.demo.model.GetAllToursResponse;
-import com.example.demo.model.Tour;
-import com.example.demo.model.Error;
+import com.example.demo.model.*;
 
-import com.example.demo.model.TourResponse;
+import com.example.demo.model.Error;
 import com.example.demo.repositories.TourPackageRepository;
 import com.example.demo.repositories.TourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +16,19 @@ import java.util.List;
 @Service
 public class TourService {
 
-    private TourMapper mapper = new TourMapper();
+    private TourMapper mapper;
 
-    @Autowired
     private TourRepository repository;
 
-    @Autowired
     private TourPackageRepository tourPackageRepository;
+    @Autowired
+    SearchTourFactory factory;
+
+    public TourService(TourMapper mapper, TourRepository repository, TourPackageRepository tourPackageRepository) {
+        this.mapper = mapper;
+        this.repository = repository;
+        this.tourPackageRepository = tourPackageRepository;
+    }
 
     public GenericResponse<List<TourResponse>> getAllTours() {
 
@@ -34,6 +38,7 @@ public class TourService {
             tours.add(mapper.mapTourResponseFromTour(tour));
 
         }
+
         return new GenericResponse<>(tours);
     }
 
@@ -66,20 +71,21 @@ public class TourService {
 
     //spaei to open/closed ara prepei na ginei refactor se strategy design bu
     public GenericResponse<List<TourResponse>> getToursByCriteria(String criteria, Long criteriaId) {
-        Iterable<Tour> tours = repository.findAll();
+        Iterable<Tour> retrievedTours = repository.findAll();
         List<TourResponse> toursToReturn = new ArrayList<>();
-        if (criteria.equalsIgnoreCase("tourPackage")) {
-            if (!tourPackageRepository.findById(criteriaId).isPresent()) {
-                return new GenericResponse<>(new Error(0, "Wrong input", "tourpackage with id : " + criteriaId + " does not exist"));
-            }
-            for (Tour tour : tours
+        SearchTourStrategy strategy = factory.makeStrategyForCriteria(criteria);
+        GenericResponse<List<Tour>> tours = strategy.execute(criteriaId, retrievedTours, tourPackageRepository);
+        if (tours.getError() == null) {
+            for (Tour tour : tours.getData()
             ) {
-                if (tour.getTourPackage().getId() == criteriaId) {
-                    toursToReturn.add(mapper.mapTourResponseFromTour(tour));
-                }
+
+                toursToReturn.add(mapper.mapTourResponseFromTour(tour));
+
             }
+            return new GenericResponse<List<TourResponse>>(toursToReturn);
         }
 
-        return new GenericResponse<>(toursToReturn);
+
+        return new GenericResponse<>(tours.getError());
     }
 }

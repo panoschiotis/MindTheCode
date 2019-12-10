@@ -1,6 +1,9 @@
 package com.example.demo.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Tour {
@@ -14,6 +17,9 @@ public class Tour {
     private String title;
     private String shortDescription;
     private String longDescription;
+    @ElementCollection
+    private List<String> strings;
+
 
     @ManyToOne
     private TourPackage tourPackage;
@@ -27,7 +33,9 @@ public class Tour {
         this.title = title;
         this.shortDescription = shortDescription;
         this.longDescription = longDescription;
+
     }
+
 
     public Tour(int price, int discount, String title, String shortDescription, String longDescription, TourPackage tourPackage) {
         this.price = price;

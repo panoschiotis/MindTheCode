@@ -2,7 +2,9 @@ package com.example.demo;
 
 import com.example.demo.model.Tour;
 import com.example.demo.model.TourResponse;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TourMapper {
 
     public TourResponse mapTourResponseFromTour(Tour tour) {

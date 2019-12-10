@@ -1,24 +1,29 @@
 package com.example.demo.controllers;
 
-import com.example.demo.model.GenericResponse;
-import com.example.demo.model.GetAllToursResponse;
-import com.example.demo.model.TourResponse;
+import com.example.demo.model.*;
 import com.example.demo.model.Error;
+import com.example.demo.repositories.TourPackageRepository;
+import com.example.demo.repositories.TourRepository;
 import com.example.demo.services.TourService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("tour-office/") // geniko koino gia olous
+
 public class TourController {
 
     @Autowired
     private TourService service;
+
+    @Autowired
+    private TourRepository repository;
+    @Autowired
+    private TourPackageRepository tourPackageRepository;
 
     @GetMapping("/allTours")
     public ResponseEntity getAllTours(){
@@ -56,14 +61,8 @@ public class TourController {
     }
 
     @GetMapping("/getToursByCriteria/{criteria}/{criteriaId}")
-    public ResponseEntity getToursByCriteria(@PathVariable String criteria, @PathVariable Long criteriaId){
-        if(!criteria.equalsIgnoreCase("tourPackage")){
-            return new ResponseEntity(
-                    new Error(0,"Wrong Criteria", "The criteria input should be tourPackage"),
-                    null,
-                    HttpStatus.BAD_REQUEST
-            );
-        }
+    public ResponseEntity getToursByCriteria(@PathVariable String criteria, @PathVariable Long criteriaId)throws NumberFormatException{
+
 
         GenericResponse<List<TourResponse>> response= service.getToursByCriteria(criteria,criteriaId);
         if(response.getError()!=null){
@@ -79,4 +78,21 @@ public class TourController {
                 null,
                 HttpStatus.OK);
     }
+
+    @PostMapping("/createTour")
+    public Tour createTour(@RequestBody Tour tour){
+       // TourPackage tourPackage= tourPackageRepository.findById(tour.getTourPackage().getId()).get();
+       // tour.setTourPackage(tourPackage);
+        repository.save(tour);
+        return tour;
+    }
+
+    @ExceptionHandler({NumberFormatException.class})
+    public ResponseEntity handleException(){
+        return new ResponseEntity(new Error(0,"Wrong second input type","Must be Long"),
+                null,
+                HttpStatus.BAD_REQUEST);
+
+    }
+
 }

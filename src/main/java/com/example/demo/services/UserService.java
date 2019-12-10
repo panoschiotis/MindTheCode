@@ -4,10 +4,8 @@ import com.example.demo.Status;
 import com.example.demo.UserMapper;
 import com.example.demo.model.Error;
 import com.example.demo.model.GenericResponse;
-import com.example.demo.model.User;
 import com.example.demo.model.UserResponse;
 import com.example.demo.repositories.UserRepository;
-import org.graalvm.compiler.lir.CompositeValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

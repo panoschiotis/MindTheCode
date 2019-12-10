@@ -1,6 +1,6 @@
 package com.example.demo;
 
-import com.example.demo.model.User;
+import com.example.demo.model.Users;
 import com.example.demo.repositories.TourPackageRepository;
 import com.example.demo.repositories.TourRepository;
 import com.example.demo.model.Tour;
@@ -68,11 +68,11 @@ public class DemoApplication implements CommandLineRunner //to run code in appli
         tourRepository.save(tour3);
 
 
-        User user1 =new User("John", "Wick", 3, Status.NEW);
-        User user2 =new User("Mary", "Popins", 6, Status.NEW);
-        User user3 =new User("George", "Calling", 16, Status.LOYAL);
-        User user4 =new User("Dick", "Johnson", 50, Status.GOLD);
-        User user5 =new User("Dick", "Johnson", 50, Status.GOLD);
+        Users user1 =new Users("John", "Wick", 3, Status.NEW);
+        Users user2 =new Users("Mary", "Popins", 6, Status.NEW);
+        Users user3 =new Users("George", "Calling", 16, Status.LOYAL);
+        Users user4 =new Users("Dick", "Johnson", 50, Status.GOLD);
+        Users user5 =new Users("Dick", "Johnson", 50, Status.GOLD);
 
         userRepository.save(user1);
         userRepository.save(user2);
